@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Tesseract Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(120deg, #f4f4f9, #d7e1ec);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            height: 100vh;
+        }
+
+        /* Loader */
+        #loader {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 10;
+            font-size: 2em;
+            color: #2d5a9f;
+            animation: fadeOut 0.5s ease-out 2s forwards;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* Page Container */
+        #pageContent {
+            display: none; /* Shown only after loader disappears */
+            animation: fadeIn 1s ease-in forwards;
+            margin-top: 40px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        h1 {
+            color: #2d5a9f;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Chatbox Container */
+        #chatContainer {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* Chatbox */
+        #chatbox {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #2d5a9f;
+            margin: 10px 0;
+        }
+
+        .dark-toggle input {
+            display: none;
+        }
+
+        /* User Input Container */
+        #userInputContainer {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #userInput {
+            flex: 1;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            margin-right: 5px;
+        }
+
+        #sendButton {
+            padding: 10px 20px;
+            background-color: #2d5a9f;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        #sendButton:hover {
+            background-color: #244a7a;
+        }
+
+        /* Chat Messages */
+        .chatMessage {
+            margin: 10px 0;
+            font-size: 14px;
+            word-wrap: break-word;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Chatbox Scrollbar */
+        #chatbox::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #chatbox::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        #chatbox::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+        /* Notification for Future Upload Feature */
+        #uploadNotification {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #2d5a9f;
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* Cute Character Message */
+        #characterMessage {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #2d5a9f;
+        }
+
+        #characterImage {
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loader">Loading Legal Tesseract...</div>
+
+    <div id="pageContent">
+        <h1>Legal Tesseract Chatbot</h1>
+        <div id="chatContainer">
+            <!-- Dark Mode Toggle -->
+            <div class="dark-toggle">
+                <label for="darkModeToggle">🌙 Dark Mode</label>
+                <input type="checkbox" id="darkModeToggle">
+            </div>
+
+            <!-- Chatbox -->
+            <div id="chatbox"></div>
+
+            <!-- User Input -->
+            <div id="userInputContainer">
+                <input type="text" id="userInput" placeholder="Type your message here...">
+                <button id="sendButton">Send</button>
+            </div>
+
+            <!-- Cute Character Recommendation -->
+            <div id="characterMessage">
+                <img id="characterImage" src="https://img.icons8.com/clouds/50/000000/question-mark.png" alt="Character">
+                <p>"Ask me who I am and what I do to get more info"</p>
+            </div>
+
+            <!-- File Upload Notification -->
+            <div id="uploadNotification">
+                File and Image uploads coming soon...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Hide Loader and Show Content
+            setTimeout(() => {
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("pageContent").style.display = "block";
+            }, 2000);
+
+            const chatbox = document.getElementById("chatbox");
+            const userInput = document.getElementById("userInput");
+            const sendButton = document.getElementById("sendButton");
+
+            async function sendMessage(message) {
+                chatbox.innerHTML += `<p class="chatMessage"><strong>You:</strong> ${message}</p>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+
+                const response = await fetch("https://unnayanlegaltessearct.onrender.com/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                chatbox.innerHTML += `<p class="chatMessage"><strong>Bot:</strong> ${data.response}</p>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+
+            sendButton.addEventListener("click", () => {
+                const userMessage = userInput.value.trim();
+                if (userMessage) {
+                    sendMessage(userMessage);
+                    userInput.value = "";
+                }
+            });
+
+            // Dark Mode Toggle
+            const darkModeToggle = document.getElementById("darkModeToggle");
+            darkModeToggle.addEventListener("change", () => {
+                document.body.classList.toggle("dark-mode", darkModeToggle.checked);
+            });
+        });
+    </script>
+</body>
+</html>
